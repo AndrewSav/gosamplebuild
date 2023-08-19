@@ -1,0 +1,21 @@
+name: "Build"
+
+on:
+  push:
+    tags:
+    - 'v*.*.*'
+jobs:
+  build:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: "Build"
+      run: cd build; TERM=dumb ./build.sh
+    - name: "Create artifact"
+      run: |
+         zip gosamplebuild-${{github.ref_name}}.zip gosamplebuild.exe
+    - uses: softprops/action-gh-release@v1
+      with:
+        files: gosamplebuild-${{github.ref_name}}.zip
